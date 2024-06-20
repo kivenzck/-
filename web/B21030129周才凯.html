@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>计数器</title>
+    <script>
+        function countElements(arr) {
+            let negativeCount = 0;
+            let zeroCount = 0;
+            let positiveCount = 0;
+
+            for (let i = 0; i < arr.length; i++) {
+                switch (true) {
+                    case arr[i] < 0:
+                        negativeCount++;
+                        break;
+                    case arr[i] === 0:
+                        zeroCount++;
+                        break;
+                    case arr[i] > 0:
+                        positiveCount++;
+                        break;
+                }
+            }
+
+            return [negativeCount, zeroCount, positiveCount];
+        }
+
+        function calculateCounts() {
+            const input = document.getElementById('inputArray');
+            const array = input.value.split(',').map(Number);
+            const counts = countElements(array);
+
+            const negativeCount = counts[0];
+            const zeroCount = counts[1];
+            const positiveCount = counts[2];
+
+            document.getElementById('negativeCount').textContent = negativeCount;
+            document.getElementById('zeroCount').textContent = zeroCount;
+            document.getElementById('positiveCount').textContent = positiveCount;
+        }
+    </script>
+</head>
+<body>
+    <h1>计数器</h1>
+    <p>请输入一个数字数组（用逗号分隔）：</p>
+    <input type="text" id="inputArray">
+    <button onclick="calculateCounts()">计算</button>
+
+    <h2>计数结果：</h2>
+    <p>负元素个数: <span id="negativeCount"></span></p>
+    <p>零的个数: <span id="zeroCount"></span></p>
+    <p>大于零的元素个数: <span id="positiveCount"></span></p>
+</body>
+</html>
