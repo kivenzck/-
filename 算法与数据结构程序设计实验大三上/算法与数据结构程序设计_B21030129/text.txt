@@ -1,0 +1,102 @@
+//题目A1：Top - N问题
+//假设全国有10000人参加物理竞赛，只录取成绩优异的前10名，并将他们从高分到低分输出。
+//(满分100分) 人和分数应该对应，就是说找出前10还包括人名，
+//但是找出前十的分数也可以对应到人名，但是随机数的结果不符合物理竞赛的实际结果，需要改进算法
+//而对落选的其他考生，无需排出名次，问此种情况下，试编写尽可能快的算法解决Top - 10问题？
+//扩展：如何在10亿数中找出前1000大的数？
+
+#pragma warning(disable:4996) //解决返回值被忽略问题 scanf
+#include <iostream> //符号 # 预处理指令 include 文件名 iostream 尖括号 <>
+//#include <algorithm> //算法
+#include <random>
+#include <chrono>
+using namespace std;
+//开头 using namespace std就是使用一个名字为std的namespace。 
+//这样命名空间 std 内定义的所有标识符都有效（曝光）
+
+int Gaussian_noise(double mean, double stddev) 
+{
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator(seed);
+    std::normal_distribution<double> dist(mean, stddev);
+    return dist(generator);
+}
+
+void swap(int nums[], int i, int j) //用于交换num数组中i项和j项的值
+{
+    int temp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = temp;
+}
+
+void heapify(int nums[], int i, int len) 
+{
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+    int newIndex = i;//i = len / 2 - 1
+    if (left<len && nums[left]>nums[newIndex]) 
+    {
+        newIndex = left;//左子节点大，父节点下标等于左子节点
+    }
+    if (right<len && nums[right]>nums[newIndex]) 
+    {
+        newIndex = right;
+    }
+    if (newIndex != i) //下标发生变换，交换num数组中i项和newIndex项的值
+    {
+        swap(nums, i, newIndex);
+        heapify(nums, newIndex, len);//继续判断新子节点和其子节点之间的大小关系，直到建立i节点的最大堆
+    }
+}
+
+void buildMaxHeap(int nums[], int len) 
+{
+    for (int i = len / 2 - 1; i >= 0; --i) //对第一个非叶子节点及之前的进行堆化
+    {
+        heapify(nums, i, len);
+    }
+}
+
+void sort(int nums[], int len) 
+{
+    buildMaxHeap(nums, len);//建立最大堆
+    for (int i = len - 1; i > 0; --i)
+    {
+        swap(nums, 0, len); //感觉是len-1，但是不想改
+        heapify(nums, 0, --len);//堆排序 
+        //最大堆：对堆树中任意子树满足：父节点大于等于任一子节点；堆顶元素是堆中最大元素； 最小堆：对堆树中任意子树满足：父节点小于等于任一子节点；堆顶元素是堆中最小元素。
+    }//将堆顶和末尾交换，对n-1再求最大堆，再交换，直到数组由小到大排列
+}
+
+int nums[10000];
+
+int main() 
+{
+    srand(time(0)); //time(0)是得到当前时间值
+    int len = sizeof(nums) / sizeof(int);//sizeof(a)/sizeof(int)含义
+    //sizeof是求字节数的函数，计算小括号里的变量占内存多少单元，计算单位是字节数。
+    //a如果是int，float，long就是4个字节，short就是2个字节，char就是1个字节，double就是8个字节。
+    //sizeof（int）就是求int型变量的字节数，也就是等于4。sizeof的优先级比除号 / 的高。
+    //本段代码的功能是获取数组元素的个数
+    //printf("%d ", len); //测试代码
+    for (int i = 0; i < len; ++i) 
+    {
+        nums[i] = Gaussian_noise(50, 10)%100;//防止出现100+的数，但是负数存在出现可能，需要限制11.7 14：21
+        //nums[i] = rand() % 100;  //编程语言中rand()表示产生一个随机整数，%100将随机数限制在[0,100)，应该改进为建立一个gaussrand( )函数，生成正态分布的数据
+    }
+    //获取随机数(0，100]，len的长度
+    for (int i = 0; i < len; ++i) 
+    {
+        printf("%d ", nums[i]);
+    }
+    printf("\n");
+    int k = 0;
+    printf("\n请输入需要获取成绩的前n名的个数："); //需要将随机数改为正态分布
+    scanf("%d", &k);
+    sort(nums, len);//排序，从小到大
+    for (int i = len - 1; i > len -1 - k; --i) 
+    {
+        printf("%d ", nums[i]);//输出最后的k个数
+    }
+    return 0;
+}
