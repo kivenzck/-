@@ -1,0 +1,53 @@
+<!DOCTYPE html> <!-- 声明文档类型为 HTML5 -->
+<html> <!-- 页面的根元素 -->
+<head> <!-- 页面的头部信息 -->
+    <title>Stock Trading System</title> <!-- 页面标题 -->
+    <script> <!-- 页面内嵌的 JavaScript 代码 -->
+        // 定义一个名为 queryStock 的函数，用于查询股票信息
+        function queryStock() {
+            // 获取页面上 id 为 stockCode 的输入框的值
+            var stockCode = document.getElementById("stockCode").value;
+            // 使用 fetch API 发送一个 GET 请求到服务器的 /query 路径，并将股票代码作为查询参数
+            fetch(`/query?code=${stockCode}`)
+                // 处理响应，将响应转换为文本格式
+                .then(response => response.text())
+                // 将响应的文本内容设置为页面上 id 为 result 的元素的文本内容
+                .then(data => {
+                    document.getElementById("result").innerText = data;
+                });
+        }
+
+        // 定义一个名为 tradeStock 的函数，用于执行股票交易
+        function tradeStock() {
+            // 获取页面上 id 为 stockCode 的输入框的值
+            var stockCode = document.getElementById("stockCode").value;
+            // 获取页面上 id 为 quantity 的输入框的值
+            var quantity = document.getElementById("quantity").value;
+            // 使用 fetch API 发送一个 POST 请求到服务器的 /trade 路径，并将股票代码和数量作为查询参数
+            fetch(`/trade?code=${stockCode}&quantity=${quantity}`)
+                // 处理响应，将响应转换为文本格式
+                .then(response => response.text())
+                // 将响应的文本内容设置为页面上 id 为 result 的元素的文本内容
+                .then(data => {
+                    document.getElementById("result").innerText = data;
+                });
+        }
+    </script> <!-- 结束内嵌的 JavaScript 代码 -->
+</head> <!-- 结束页面的头部信息 -->
+
+<body> <!-- 页面的主体内容 -->
+    <h1>Stock Trading System</h1> <!-- 页面的标题 -->
+    <label for="stockCode">Stock Code:</label> <!-- 标签，提示用户输入股票代码 -->
+    <input type="text" id="stockCode" name="stockCode"> <!-- 输入框，用于输入股票代码 -->
+    <br><br> <!-- 换行 -->
+    <label for="quantity">Quantity:</label> <!-- 标签，提示用户输入交易数量 -->
+    <input type="number" id="quantity" name="quantity"> <!-- 输入框，用于输入交易数量 -->
+    <br><br> <!-- 换行 -->
+    <!-- 按钮，点击时调用 queryStock 函数，查询股票信息 -->
+    <button onclick="queryStock()">Query Stock</button>
+    <!-- 按钮，点击时调用 tradeStock 函数，执行股票交易 -->
+    <button onclick="tradeStock()">Trade Stock</button>
+    <h2>Result:</h2> <!-- 结果标题 -->
+    <p id="result"></p> <!-- 结果显示区域 -->
+</body> <!-- 结束页面的主体内容 -->
+</html> <!-- 结束 HTML 页面 -->
